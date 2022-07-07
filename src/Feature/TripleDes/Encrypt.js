@@ -11,12 +11,18 @@ import { postData } from "../../Lib/postData";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-// import FileInput from "react-file-input";
+import { setToLocal, getFromLocal } from "../../Lib/localStorageLib";
 
 export const Encrypt = () => {
   const [Text, SetText] = useState();
   const [TextEncrypt, SetTextEncrypt] = useState();
+  const [TextEncryptFromLocal, SetTextEncryptFromLocal] = useState(
+    getFromLocal()?.cypherText
+  );
   const [FileEncrypt, SetFileEncrypt] = useState();
+  const [FileEncryptFromLocal, SetFileEncryptFromLocal] = useState(
+    getFromLocal()?.FileImage
+  );
   const [files, setFiles] = useState();
 
   const onChange = (text) => {
@@ -34,6 +40,7 @@ export const Encrypt = () => {
     if (Text) {
       console.log("text");
       SetTextEncrypt(encryptText);
+      setToLocal("cypherText", { cypherText: encryptText });
       postData(baseURL, { ciphertext: encryptText }).then((data) => {
         SetText("");
         console.log(data);
@@ -42,13 +49,14 @@ export const Encrypt = () => {
     if (files) {
       console.log("file");
       SetFileEncrypt(encryptFile);
+      setToLocal("FileImage", { fileEncrypt: encryptFile });
       postData(baseURL_File, { ciphertext: encryptFile }).then((data) => {
         setFiles(null);
         console.log(data);
       });
     }
   };
-
+  
   return (
     <div>
       <h1>Text Input</h1>
@@ -82,7 +90,8 @@ export const Encrypt = () => {
         /> */}
 
         <Button onClick={onSubmit}>Click me</Button>
-        {/* <p>{TextEncrypt ? TextEncrypt : ""}</p> */}
+
+        {/* <p>Text:{TextEncryptFromLocal}</p> */}
       </Box>
     </div>
   );

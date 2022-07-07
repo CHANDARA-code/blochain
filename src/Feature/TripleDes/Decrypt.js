@@ -8,6 +8,8 @@ import CircularProgress, {
   CircularProgressProps,
 } from "@mui/material/CircularProgress";
 import { decrypt } from "../../Lib/decrypt";
+import { setToLocal,getFromLocal } from "../../Lib/localStorageLib";
+
 
 console.log("BaseURL:", BaseURL);
 
@@ -21,11 +23,14 @@ export const Decrypt = () => {
   const [DecryptData, SetDecryptData] = useState();
   const [DecryptDatarText, SetDecryptDataText] = useState();
   const [img, setImg] = useState();
+
+  // console.log("getFromLocal:",getFromLocal())
   useEffect(() => {
     setLoading(true);
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        setToLocal("cypherTextAPI", data);
         setData(data);
       })
       .catch((e) => {
@@ -42,6 +47,7 @@ export const Decrypt = () => {
         setDataFile(data.data.base64);
         SetDecryptData(decrypt(data.data.base64));
         setImg(decrypt(data.data.base64));
+        setToLocal("FileImageAPI", data);
       })
       .catch((e) => {
         setError(e);
@@ -84,7 +90,7 @@ export const Decrypt = () => {
         value={Text}
       />
       <Button onClick={onSubmit}>Click me</Button>
-      {!loading && <p>Cypertext Text API : {DecryptDatarText}</p>}
+      {!loading && <p>Decrypt Cypertext:{DecryptDatarText}</p>}
     </Box>
   );
 };
