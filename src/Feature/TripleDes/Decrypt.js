@@ -12,7 +12,6 @@ import { decrypt } from "../../Lib/decrypt";
 console.log("BaseURL:", BaseURL);
 
 export const Decrypt = () => {
-  // const [data, setData] = React.useState(null);
   const url = `${BaseURL}/api/encrypt`;
   const url_file = `${BaseURL}/api/encrypt-file`;
   const [data, setData] = useState();
@@ -20,6 +19,7 @@ export const Decrypt = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [DecryptData, SetDecryptData] = useState();
+  const [DecryptDatarText, SetDecryptDataText] = useState();
   const [img, setImg] = useState();
   useEffect(() => {
     setLoading(true);
@@ -57,6 +57,7 @@ export const Decrypt = () => {
     console.log("on submit");
     const decryptData = decrypt(Text);
     SetDecryptData(decryptData);
+    SetDecryptDataText(decryptData);
     SetText("");
   };
 
@@ -72,7 +73,8 @@ export const Decrypt = () => {
       <h1>Custom Decrypt</h1>
       {<img src={`data:image/png;base64,` + img} />}
       {!loading && <p>Cypertext Text API : {data.data}</p>}
-      {!loading && <p>Cypertext File API : {dataFile}</p>}
+
+      {/* {!loading && <p>Cypertext File API : {dataFile}</p>} */}
       {loading && <CircularProgress color="success" />}
       <TextField
         id="outlined-basic"
@@ -82,6 +84,7 @@ export const Decrypt = () => {
         value={Text}
       />
       <Button onClick={onSubmit}>Click me</Button>
+      {!loading && <p>Cypertext Text API : {DecryptDatarText}</p>}
     </Box>
   );
 };
