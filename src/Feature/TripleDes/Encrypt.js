@@ -17,11 +17,11 @@ export const Encrypt = () => {
   const [Text, SetText] = useState();
   const [TextEncrypt, SetTextEncrypt] = useState();
   const [TextEncryptFromLocal, SetTextEncryptFromLocal] = useState(
-    getFromLocal()?.cypherText
+    getFromLocal("cypherText")?.cypherText
   );
   const [FileEncrypt, SetFileEncrypt] = useState();
   const [FileEncryptFromLocal, SetFileEncryptFromLocal] = useState(
-    getFromLocal()?.FileImage
+    getFromLocal("FileImage")?.FileImage
   );
   const [files, setFiles] = useState();
 
@@ -56,7 +56,7 @@ export const Encrypt = () => {
       });
     }
   };
-  
+
   return (
     <div>
       <h1>Text Input</h1>
@@ -90,8 +90,9 @@ export const Encrypt = () => {
         /> */}
 
         <Button onClick={onSubmit}>Click me</Button>
-
-        {/* <p>Text:{TextEncryptFromLocal}</p> */}
+        <p>History</p>
+        <p>{TextEncryptFromLocal ?`Text:${TextEncryptFromLocal}`:""}</p>
+        <p>{FileEncryptFromLocal?`File:${FileEncryptFromLocal}`:""}</p>
       </Box>
     </div>
   );
