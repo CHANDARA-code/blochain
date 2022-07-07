@@ -5,17 +5,48 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { BaseURL } from "../../env";
+import { encrypt } from "../../Lib/encrypt";
+import FileBase64 from "react-file-base64";
+import { postData } from "../../Lib/postData";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+// import FileInput from "react-file-input";
+
 export const Encrypt = () => {
   const [Text, SetText] = useState();
+  const [TextEncrypt, SetTextEncrypt] = useState();
+  const [FileEncrypt, SetFileEncrypt] = useState();
+  const [files, setFiles] = useState();
+
   const onChange = (text) => {
     console.log("cool", text.target.value);
     SetText(text.target.value);
   };
-  const baseURL = `${BaseURL}/api/encrypt`;
+  const baseURL = `${BaseURL}/api/decrypt`;
+  const baseURL_File = `${BaseURL}/api/decrypt-file`;
 
   const onSubmit = () => {
     console.log("on submit");
-    SetText("");
+    const encryptText = encrypt(Text);
+    const encryptFile = encrypt(files);
+
+    if (Text) {
+      console.log("text");
+      SetTextEncrypt(encryptText);
+      postData(baseURL, { ciphertext: encryptText }).then((data) => {
+        SetText("");
+        console.log(data);
+      });
+    }
+    if (files) {
+      console.log("file");
+      SetFileEncrypt(encryptFile);
+      postData(baseURL_File, { ciphertext: encryptFile }).then((data) => {
+        setFiles(null);
+        console.log(data);
+      });
+    }
   };
 
   return (
@@ -36,7 +67,22 @@ export const Encrypt = () => {
           onChange={onChange}
           value={Text}
         />
+        <FileBase64
+          type="file"
+          multiple={false}
+          onDone={(data) => setFiles(data.base64)}
+        />
+
+        {/* <FileInput
+          name="myImage"
+          accept=".png,.gif"
+          placeholder="My Image"
+          className="inputClass"
+          onChange={this.handleChange}
+        /> */}
+
         <Button onClick={onSubmit}>Click me</Button>
+        {/* <p>{TextEncrypt ? TextEncrypt : ""}</p> */}
       </Box>
     </div>
   );

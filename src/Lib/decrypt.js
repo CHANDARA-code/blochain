@@ -1,20 +1,16 @@
 import CryptoJS from "crypto-js";
-import { key } from "../env";
+import { IV,KEY} from "../env";
 // // console.log("haha;",key)
-export function decrypt(param) {
-  console.log("param:", param);
-  const decodedWord = CryptoJS.enc.Base64.parse(param);
-  console.log("decodeWord:", decodedWord);
-  const decoded = CryptoJS.enc.Utf8.stringify(decodedWord.words);
-  console.log("decode:",decoded);
-  let plaintext = CryptoJS.TripleDES.decrypt(decoded, key);
-  return plaintext.toString(CryptoJS.enc.Utf8);
+export function decrypt(ciphertext) {
+  var key = KEY;
+  var iv = IV;
+  let keyWA = CryptoJS.enc.Utf8.parse(key);
+  let ivWA = CryptoJS.enc.Utf8.parse(iv); 
+  const bytes = CryptoJS.AES.decrypt(ciphertext, keyWA, {
+      iv: ivWA,
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+  });
+  const originalText = bytes.toString(CryptoJS.enc.Utf8);
+ return originalText;
 }
-
-// export function decrypt(param) {
-//     const decodedWord = CryptoJS.enc.Base64.parse(param);
-//     const decoded = CryptoJS.enc.Utf8.stringify(decodedWord);
-//     let plaintext = CryptoJS.TripleDES.decrypt(decoded, key);
-//     console.log("plaintext:",plaintext)
-//     return plaintext.toString(CryptoJS.enc.Utf8);
-//   };
