@@ -1,16 +1,12 @@
 import CryptoJS from "crypto-js";
-import { IV,KEY} from "../env";
-// // console.log("haha;",key)
-export function decrypt(ciphertext) {
-  var key = KEY;
-  var iv = IV;
-  let keyWA = CryptoJS.enc.Utf8.parse(key);
-  let ivWA = CryptoJS.enc.Utf8.parse(iv); 
-  const bytes = CryptoJS.AES.decrypt(ciphertext, keyWA, {
-      iv: ivWA,
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC
-  });
-  const originalText = bytes.toString(CryptoJS.enc.Utf8);
- return originalText;
-}
+import { KEY, BaseURL, IV, PUBLICKEY, PRIVATEKEY } from "../env";
+import { JSEncrypt } from "jsencrypt";
+var decrypt = new JSEncrypt();
+export const DecryptLib = (ciphertext) => {
+  var encrypted = ciphertext
+  // Decrypt with the private key...
+  var decrypt = new JSEncrypt();
+  decrypt.setPrivateKey(PRIVATEKEY);
+  var uncrypted = decrypt.decrypt(encrypted);
+  return uncrypted;
+};

@@ -7,30 +7,30 @@ import { BaseURL } from "../../env";
 import CircularProgress, {
   CircularProgressProps,
 } from "@mui/material/CircularProgress";
-import { decrypt } from "../../Lib/decrypt";
-import { setToLocal,getFromLocal } from "../../Lib/localStorageLib";
-
+import { DecryptLib } from "../../Lib/decrypt";
+import { setToLocal, getFromLocal } from "../../Lib/localStorageLib";
 
 console.log("BaseURL:", BaseURL);
 
 export const Decrypt = () => {
-  const url = `${BaseURL}/api/encrypt`;
-  const url_file = `${BaseURL}/api/encrypt-file`;
+  const url = `${BaseURL}/api/rsa/encrypt-public`;
   const [data, setData] = useState();
   const [dataFile, setDataFile] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [DecryptData, SetDecryptData] = useState();
   const [DecryptDatarText, SetDecryptDataText] = useState();
-  const [img, setImg] = useState();
 
-  // console.log("getFromLocal:",getFromLocal())
   useEffect(() => {
     setLoading(true);
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setToLocal("cypherTextAPI", data);
+        console.log("data:", data.data);
+        console.log("data:", data);
+        const haha = DecryptLib(data.data);
+        console.log("Decrypt=>:", haha);
+        SetDecryptDataText(haha);
         setData(data);
       })
       .catch((e) => {
@@ -38,22 +38,7 @@ export const Decrypt = () => {
       })
       .finally(() => setLoading(false));
   }, [url]);
-  useEffect(() => {
-    setLoading(true);
-    fetch(url_file)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log("haha:", data.data.base64);
-        setDataFile(data.data.base64);
-        SetDecryptData(decrypt(data.data.base64));
-        setImg(decrypt(data.data.base64));
-        setToLocal("FileImageAPI", data);
-      })
-      .catch((e) => {
-        setError(e);
-      })
-      .finally(() => setLoading(false));
-  }, [url_file]);
+
   const [Text, SetText] = useState();
   const onChange = (text) => {
     console.log("cool", text.target.value);
@@ -61,7 +46,7 @@ export const Decrypt = () => {
   };
   const onSubmit = () => {
     console.log("on submit");
-    const decryptData = decrypt(Text);
+    const decryptData = DecryptLib(Text);
     SetDecryptData(decryptData);
     SetDecryptDataText(decryptData);
     SetText("");
@@ -77,11 +62,7 @@ export const Decrypt = () => {
       autoComplete="off"
     >
       <h1>Custom Decrypt</h1>
-      {<img src={`data:image/png;base64,` + img} />}
-      {!loading && <p>Cypertext Text API : {data.data}</p>}
-
-      {/* {!loading && <p>Cypertext File API : {dataFile}</p>} */}
-      {loading && <CircularProgress color="success" />}
+      <p>{loading ? "" : data.data}</p>
       <TextField
         id="outlined-basic"
         label="Text to Decrypt"
